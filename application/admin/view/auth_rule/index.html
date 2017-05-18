@@ -1,0 +1,152 @@
+{extend name="public/layout"}
+{block name="css"}
+<link href="__CSS__plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+<style>
+    .jstree-open > .jstree-anchor > .fa-folder:before {
+        content: "\f07c";
+    }
+
+    .jstree-default .jstree-icon.none {
+        width: 0;
+    }
+</style>
+
+{/block}
+{block name="content"}
+<div class="col-sm-12">
+    <div class="fixed-table-toolbar">
+        <div class="bars pull-left">
+            <div class="btn-group hidden-xs">
+                <button onclick="_layOpenUrl('{:url('create')}','添加菜单')" type="button" class="btn btn-outline btn-default" >
+                    <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-outline btn-default">
+                    <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="columns columns-right btn-group pull-right">
+            <button class="btn btn-default btn-outline" type="button" title="搜索"><i class="glyphicon glyphicon-search"></i></button>
+            <button onclick="javascript:window.location.reload();" class="btn btn-default btn-outline" type="button" name="refresh" title="刷新"><i class="glyphicon glyphicon-repeat"></i></button>
+        </div>
+        <div class="pull-right search">
+            <input class="form-control input-outline" type="text" placeholder="请输入关键字">
+        </div>
+    </div>
+    <table data-toggle="table" data-click-to-select="true" data-mobile-responsive="true">
+        <thead>
+        <tr>
+            <th data-field="ids" data-checkbox="true"></th>
+            <th data-field="id">ID</th>
+            <th data-field="title">名称</th>
+            <th data-field="name">链接地址</th>
+            <th data-field="condition">附加规则</th>
+            <th data-field="icon">图标</th>
+            <th data-field="pid">PID</th>
+            <th data-field="order" data-align="center">排序</th>
+            <th data-field="status" data-align="center">状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="list" id="v"}
+        <tr id="item{$v.id}">
+            <td><input type="checkbox" name="ids" value="{$v.id}" /></td>
+            <td>{$v.id}</td>
+            <td>{$v.html}{$v.title}</td>
+            <td>{$v.name}</td>
+            <td>{$v.condition}</td>
+            <td>{$v.icon}</td>
+            <td>{$v.pid}</td>
+            <td><input onblur="_setOrder(this,{$v.id},{$v.order});" type="text" value="{$v.order}" size="5" style="text-align: center;"/> </td>
+            <td data-align="center">
+                <button id="status{$v.id}" onclick="_setStatus({$v.id});" class="btn {eq name="$v->getData('status')" value="1"}btn-info{else/}btn-default{/eq}" type="button">{$v.status}</button>
+            </td>
+            <td>
+                <button onclick="_layOpenUrl('{:url('create',['pid'=>$v.id])}', '添加子菜单');" class="btn btn-info " type="button" title="添加子菜单"><i class="fa fa-plus"></i> </button>
+                <button onclick="_layOpenUrl('{:url('edit',['id'=>$v.id])}', '修改菜单');" class="btn btn-info " type="button"><i class="fa fa-paste"></i> 编辑</button>
+                <button onclick="_del({$v->id});" class="btn btn-danger" type="button"><i class="fa fa-trash"></i> 删除</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+{/block}}
+{block name="js"}
+<!-- Bootstrap table -->
+<script src="__JS__plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="__JS__plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="__JS__plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="__JS__plugins/jsTree/jstree.min.js"></script>
+<script>
+    function _setStatus(id) {
+        event.stopPropagation();
+        layer.confirm('确定修改菜单状态？',{btn: ['修改','取消']},function(index){
+            _ajax({
+                "url": "{:url('setStatus')}",
+                "data": {id: id},
+                "success": function(data){
+                    if(data.code == 200){
+                        layer.msg(data.msg,{icon: 1,time: 700});
+                        var cl = $('#status'+id).attr('class');
+                        cl = (cl=='btn btn-info')?'btn btn-defaule':'btn btn-info';
+                        $('#status'+id).text(data.data);
+                        $('#status'+id).attr('class',cl);
+
+                    } else {
+                        layer.alert( data.msg );
+                    }
+                },
+                "param": id
+            });
+            layer.close(index);
+        },function(index){
+            layer.close(index);
+        })
+    }
+
+    function _del(id){
+        layer.confirm('确定删除菜单？',{btn: ['删除','取消']},function(index){
+            _ajax({
+                url: "{:url('delete')}",
+                data: {id: id},
+                success: function(data){
+                    if(data.code == 200){
+                        $('#item'+id).hide();
+                        layer.msg(data.msg,{icon: 1,time: 700});
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                },
+                param: id
+            });
+            layer.close(index);
+        },function(index){
+            layer.close(index);
+        })
+    }
+
+    function _setOrder(ele, id, val){
+        var order = $(ele).val();
+        if(order == val){
+            return;
+        }
+        layer.confirm('确定修改排序？',{btn: ['修改','取消']},function(index){
+            _ajax({
+                url: "{:url('setOrder')}",
+                data: {id:id, order:order},
+                success: function(data){
+                    if(data.code == 200){
+                        layer.msg(data.msg,{icon: 1,time: 700});
+                    }
+                }
+            })
+            layer.close(index);
+        },function(index){
+            layer.close(index);
+        })
+    }
+
+</script>
+{/block}

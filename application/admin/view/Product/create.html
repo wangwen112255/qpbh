@@ -1,0 +1,277 @@
+{extend name="public/layout"}
+{block name="css"}
+<link href="__CSS__plugins/switchery/switchery.css" rel="stylesheet">
+<link href="__CSS__plugins/iCheck/custom.css" rel="stylesheet">
+<link href="__CSS__plugins/fileinput/fileinput.min.css" rel="stylesheet">
+<style>
+    .input-group-addon{width: 40%;border: none;padding: 0 0 0 12px;}
+    .input-group .form-control.col-sm-6{width: 60%;}
+    .input-group .form-control.col-sm-5{width: 30%;}
+</style>
+{/block}
+{block name="content"}
+<form class="form-horizontal m-t" action="{:url('save')}" method="post" id="signupForm" enctype="multipart/form-data">
+    <input type="hidden" id="pic" name="pic" value="{$data->pic|default=''}">
+    <div class="col-sm-7">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                基本信息
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">名称：</label>
+                    <div class="col-sm-8">
+                        <input id="name" name="name" value="{$data->name|default=''}"  class="form-control" type="text" aria-required="true" aria-invalid="true" class="error">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">展示图：</label>
+                    <div class="col-sm-8">
+                        <input id="image" name="image" type="file" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">类别：</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" onchange="_getCateAttr(this)" name="cate_id" id="cate_id">
+                            <option value="">请选择类别</option>
+                            {volist name="catelist" id="v"}
+                            <option value="{$v.id}" {eq name="data.cate_id|default=''" value="$v['id']"}selected{/eq}>{$v.html}{$v.cate_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">详情：</label>
+                    <div class="col-sm-8">
+                        <div id="desc"></div>
+                        <!--<textarea name="desc" id="desc" rows="5" class="form-control">{$data->desc|default=''}</textarea>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">状态：</label>
+                    <div class="col-sm-8">
+                        <input type="checkbox" value="1" class="form-control js-switch" id="status" name="status" checked>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-3">
+                        <button class="btn btn-primary" type="submit">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                属性
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="input-group" style="padding-right: 15px;">
+                        <span class="input-group-addon col-sm-4">
+                            <select name="attrname" id="attrname" class="form-control">
+                                <option value="">请选择属性</option>
+                                {notempty name="cateAttrList"}
+                                    {volist name="cateAttrList" id="v"}
+                                    <option value="{$v->id}">{$v->attr_note}</option>
+                                    {/volist}
+                                {/notempty}
+                            </select>
+                        </span>
+                        <input type="text" id="attrvalue" class="form-control col-sm-6">
+                        <span class="input-group-btn">
+                            <button type="button" onclick="_addAttr();" class="btn btn-primary">添加</button>
+                        </span>
+                    </div>
+                    <hr style="background-color:#ccc;height:1px"/>
+                </div>
+                <div id="attrlist">
+                    {notempty name="data->attr"}
+                        {volist name="data->attr" id="v"}
+                        <div class="from-group" id="attritem{$v->id}">
+                            <div class="input-group" style="padding-right: 15px;">
+                                <span class="input-group-addon col-sm-2"><input type="text" readonly value="{$v->cateattr->attr_note}" class="form-control"/></span>
+                                <input type="hidden" name="attr_id[]" value="{$v->id}">
+                                <input type="hidden" name="cate_attr_id[]" value="{$v->cate_attr_id}">
+                                <input type="text" name="attr_value[]" value="{$v->attr_value}" class="form-control col-sm-5">
+                                <input type="text" name="attr_price[]" class="form-control col-sm-5" value="{$v->attr_price|default=''}" placeholder="价格">
+                                <span class="input-group-btn"><button type="button" onclick="_delAttr({$v->id},true);" class="btn btn-primary">删除</button></span>
+                            </div>
+                        </div>
+                        {/volist}
+                    {/notempty}
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="js"}
+<script src="__JS__plugins/validate/jquery.validate.min.js"></script>
+<script src="__JS__plugins/validate/messages_zh.min.js"></script>
+<script src="__JS__plugins/switchery/switchery.js"></script>
+<script src="__JS__plugins/iCheck/icheck.min.js"></script>
+<script src="__JS__plugins/fileinput/fileinput.min.js"></script>
+<script src="__JS__plugins/fileinput/fileinput_locale_zh.js"></script>
+<script src="__JS__plugins/ueditor/ueditor.config.js"></script>
+<script src="__JS__plugins/ueditor/ueditor.all.min.js"></script>
+<script src="__JS__plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script>
+    // checkbox
+    var elem = document.querySelector('.js-switch');
+    new Switchery(elem,{ color: '#64bd63', secondaryColor: '#f00', jackColor: '#fff'});
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green'
+    });
+//验证，表单提交
+    $().ready(function () {
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        var rules = {
+            name: 'required',
+            cate_id: 'required',
+        };
+        var message = {
+            name: icon+'请填写名称',
+            cate_id: icon+'请选择类别',
+        };
+        _validateForm('',rules, message);
+    });
+
+    $("#image").fileinput({
+        language: 'zh',
+        showUpload: true,
+        showCaption: false,
+        uploadUrl: "{:url('api/file/upload')}",
+        uploadExtraData: {'path':'Goods', 'size': '100'},
+        browseClass: "btn btn-primary",
+        allowedFileTypes: ['image'],
+        allowedFileExtensions: ['jpg', 'png','gif'],
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>"
+    });
+
+    $("#image").on("fileuploaded", function (event, data, previewId, index) {
+        var res = data.response;
+        if(res.code == 200){
+            $('#pic').val(res.data);
+        } else {
+            layer.alert(res.msg);
+        }
+    });
+
+    var ue = UE.getEditor('desc',{
+//        serverUrl: "{:url('api/file/upload','','html',true)}",
+        textarea: 'desc',
+        initialContent: '{$data.desc|default=""}',
+    });
+
+    {notempty name="data['pic']"}
+        initPortrait('image', '{$data.pic}')
+    {/notempty}
+
+    //初始化图像信息
+    function initPortrait(ctrlName, src) {
+        var control = $('#' + ctrlName);
+        var imageurl = '__ROOT__'+src;
+
+        //重要，需要更新控件的附加参数内容，以及图片初始化显示
+        control.fileinput('refresh', {
+            initialPreview: [ //预览图片的设置
+                "<img src='" + imageurl + "' class='file-preview-image' alt='图片' title='图片'>",
+            ],
+        });
+    }
+    var addattrlist = [];
+    function _addAttr(){
+        if(!$('#cate_id').val()){
+            layer.alert('请先选择类别');
+            return;
+        }
+        var attrname = $('#attrname').find("option:selected").text();
+        var attrid = $('#attrname').val();
+        var attrvalue = $('#attrvalue').val();
+        if(!attrid || !attrvalue){
+            return;
+        }
+        if(addattrlist[attrid] == attrvalue){
+            layer.alert('已存在',{icon:5});
+            return;
+        }
+        addattrlist[attrid]=attrname;
+        var newDiv = document.createElement('div');
+        newDiv.className = 'form-group';
+        newDiv.id = 'attritem'+attrid;
+        var html = '<div class="input-group" style="padding-right: 15px;">'+
+                '<span class="input-group-addon col-sm-2"><input type="text" readonly value="'+attrname+'" class="form-control"/></span>'+
+                '<input type="hidden" name="cate_attr_id[]" value="'+attrid+'">'+
+                '<input type="text" name="attr_value[]" value="'+attrvalue+'" class="form-control col-sm-5">'+
+                '<input type="text" name="attr_price[]" class="form-control col-sm-5" placeholder="价格">'+
+                '<span class="input-group-btn"><button type="button" onclick="_delAttr('+attrid+');" class="btn btn-primary">删除</button>'+
+                '</span></div>';
+        newDiv.innerHTML = html;
+        $('#attrlist').append(newDiv);
+    }
+
+    function _delAttr(id,type){
+        console.log(type)
+        type = type||false;
+        if(type === true){
+            $.ajax({
+                url: '{:url("deleteAttr")}',
+                data: {id: id},
+                type: 'post',
+                dataType: 'json',
+                success: function(data){
+                    console.log(data)
+                    if(data.code == 200){
+                        $('#item'+id).remove();
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                },
+                error: function (x) {
+                    console.log(x.responseText)
+                }
+            })
+        }
+        $('#attritem'+id).remove();
+        addattrlist[id]= undefined;
+    }
+
+    function _getCateAttr(el){
+        var id = $(el).val();
+        if(!id){
+            return;
+        }
+        $.ajax({
+            url: "{:url('Productcateattr/getByCateId')}",
+            data: {cate_id: id},
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                if(data.code == 200){
+                    var list = data.data;
+                    if(typeof list == 'string'){
+                        list = JSON.parse(list);
+                    }
+                    if(!list) return;
+                    if(list.length == 0) return;
+                    var html = '<option value="">请选择属性</option>'
+                    for (var i=0;i<list.length;i++){
+                        html += '<option value="'+list[i].id+'">'+list[i].attr_note+'</option>';
+                    }
+                    $('#attrname').html(html);
+                    $('#attrlist').html('');
+                } else {
+                    layer.alert(data.msg)
+                }
+            },
+            error: function (x) {
+                layer.alert('链接失败，请刷新重试！');
+            }
+        })
+    }
+</script>
+{/block}

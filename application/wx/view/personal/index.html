@@ -1,0 +1,83 @@
+
+{extend name="public/layout" /}
+{block name="css"}<style>
+.status div{
+    color:#666 !important;
+    font-weight: 400;
+    font-size:12px !important;
+   }
+.mui-table-view::after {
+    margin-left: 0px;
+}
+.fxcontent{
+     padding-top:0px !important;
+}
+    </style>
+{/block}
+{block name="content"}
+<header class="mui-bar mui-bar-nav fxtop">
+    <div class="circle circle-large">
+        <div class="circle-icon circle-icon-white circle-icon-large"></div>
+        <span class="circle-text">fasdf</span>
+    </div>
+
+    <div class="order-nav"></div>
+</header>
+
+<div class="mui-content fxcontent white">
+    <div>
+        <p class="way-num" style="font-size: 14px;padding-top:10px;" onclick="window.location='{:url('personal/order',['item'=>1])}'">查看全部订单></p>
+
+        <p class="way" style="font-size: 16px;">我的千品</p>
+
+    </div>
+    <br />
+    <ul class="mui-table-view mui-grid-view mui-grid-9 status">
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" onclick="window.location='{:url('personal/order',['item'=>2])}'">
+            <a href="#">
+                <span class="iconfont icon-daifukuan " style="font-size: 22px!important;"></span>
+                <div class="mui-media-body">待付款</div>
+            </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" onclick="window.location='{:url('personal/order',['item'=>3])}'">
+            <a href="#">
+                <span class="iconfont icon-hongjiuchengicondaifahuo " style="font-size: 22px!important;"></span>
+
+                <div class="mui-media-body">待发货</div>
+            </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" onclick="window.location='{:url('personal/order',['item'=>4])}'">
+            <a href="#">
+                <span class="iconfont icon-daishouhuo" style="font-size: 22px!important;"></span>
+
+                <div class="mui-media-body">待收货</div>
+            </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" onclick="window.location='{:url('Cart/index')}'">
+            <a href="#">
+                <span class="iconfont icon-tubiao4" style="font-size: 22px!important;"></span>
+
+                <div class="mui-media-body">购物车</div>
+            </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" onclick="window.location='{:url('share/index')}'">
+            <a href="#">
+                <span class="iconfont icon-iconfontcaiwu" style="font-size: 22px!important;"></span>
+
+                <div class="mui-media-body">分享中心</div>
+            </a>
+        </li>
+
+    </ul>
+
+
+
+{/block}
+    {block  name="js" }
+
+    <script type="text/javascript">
+
+
+
+    </script>
+    {/block}

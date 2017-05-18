@@ -1,0 +1,112 @@
+{extend name="public/layout"}
+{block name="css"}
+<link href="__CSS__plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+{/block}
+{block name="content"}
+<div class="col-sm-12">
+    <!-- Example Events -->
+    <div class="example-wrap">
+        <h4 class="example-title">事件</h4>
+        <div class="example">
+            <div class="alert alert-success" id="examplebtTableEventsResult" role="alert">
+                事件结果
+            </div>
+            <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                <button type="button" class="btn btn-outline btn-default">
+                    <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-outline btn-default">
+                    <i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-outline btn-default">
+                    <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+            <table id="exampleTableEvents" data-height="400" data-mobile-responsive="true">
+                <thead>
+                <tr>
+                    <th data-field="state" data-checkbox="true"></th>
+                    <th data-field="id">ID</th>
+                    <th data-field="name">名称</th>
+                    <th data-field="price">价格</th>
+                    <th data-field="column1">0</th>
+                    <th data-field="column2">1</th>
+                    <th data-field="column3">2</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <!-- End Example Events -->
+</div>
+</div>
+{/block}}
+{block name="js"}
+
+<!-- Bootstrap table -->
+<script src="__JS__plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="__JS__plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="__JS__plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script>
+
+
+            $('#exampleTableEvents').bootstrapTable({
+                url: "__JS__demo/bootstrap_table_test.json",
+                search: true,
+                pagination: true,
+                showRefresh: true,
+                showToggle: true,
+                showColumns: true,
+                iconSize: 'outline',
+                toolbar: '#exampleTableEventsToolbar',
+                icons: {
+                    refresh: 'glyphicon-repeat',
+                    toggle: 'glyphicon-list-alt',
+                    columns: 'glyphicon-list'
+                }
+            });
+
+            var $result = $('#examplebtTableEventsResult');
+
+            $('#exampleTableEvents').on('all.bs.table', function(e, name, args) {
+                console.log('Event:', name, ', data:', args);
+            })
+                    .on('click-row.bs.table', function(e, row, $element) {
+                        //单击行
+                    })
+                    .on('dbl-click-row.bs.table', function(e, row, $element) {
+                        //双击行
+                    })
+                    .on('sort.bs.table', function(e, name, order) {
+                        //排序，无
+                    })
+                    .on('check.bs.table', function(e, row) {
+                        //选择
+                    })
+                    .on('uncheck.bs.table', function(e, row) {
+                        //取消选择
+                    })
+                    .on('check-all.bs.table', function(e) {
+                        //选择全部订单
+                    })
+                    .on('uncheck-all.bs.table', function(e) {
+                        //取消选择全部订单
+                    })
+                    .on('load-success.bs.table', function(e, data) {
+                        //数据加载成功
+                    })
+                    .on('load-error.bs.table', function(e, status) {
+                        //数据加载失败
+                    })
+                    .on('column-switch.bs.table', function(e, field, checked) {
+                        //数据列隐藏，显示
+                    })
+                    .on('page-change.bs.table', function(e, size, number) {
+                        //改变页码
+                    })
+                    .on('search.bs.table', function(e, text) {
+                        //搜索
+                    });
+
+</script>
+{/block}

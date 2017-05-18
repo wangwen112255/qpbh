@@ -1,0 +1,119 @@
+{extend name="public/layout" /}
+{block name="css"}
+         <style>
+			 input[type="search"]{padding: 0 0 0 30px;}
+			 .mui-bar .mui-icon{padding-top: 15px;}
+			 .mui-icon-search{ display: none}
+			 .mui-search.mui-active::before{padding-top: 2px;display: none;}
+			 #se{position: relative;top:-32px;z-index: 1006; left:37%;}
+             a{ font-weight:300;font-size: 14px;}
+			 .mui-bar-nav.mui-bar .mui-icon{
+				 margin-left: -10px;
+				 color:black !important;
+			 }
+			 .mui-table-view::after{
+				 margin-left:0px ;
+			 }
+		 </style>
+{/block}
+	{block name="content"}
+	<header class="mui-bar mui-bar-nav headback ">
+		<form action="{:url('Products/search')}" onsubmit="_search();return false;">
+			<span style="position: absolute;left:10px;z-index: 1009; top:-5px;">
+				<span class="mui-icon mui-icon-arrowthinleft"style="font-weight: 900;font-size: 30px; " onclick="history.go(-1);"></span>
+				</span>
+			<div class="mui-input-row mui-search  " style="padding-left: 20px">
+				<input type="search" name="search" id="search"  class="mui-input-clear" style="background: white;border-radius: 25px;margin-top: 10px;" placeholder="">
+				<span style="display:inline;" id="se" class="mui-icon mui-icon-search" ></span>
+			</div>
+		</form>
+	</header>
+       <div class="whitenav"></div>
+
+	<div class="mui-content">
+		
+		<div class="mui-row" style="border: none;display: none">
+		  <div class="mui-col-xs-6">
+		    <ul class="mui-table-view ">
+               	<li class="mui-table-view-cell mui-collapse menu-head-toggle"style="text-align: center;">
+               		
+               		<a class="mui-navigate-right menu-toggle" href="#">综合排序</a>
+               		<div  class="mui-col-xs-12 fix " >
+               			
+               			<div class="mui-collapse-content itemcontent">
+               				<a>上架时间</a>
+               			</div>
+               			<div class="mui-collapse-content itemcontent">
+               				<a>价格从低到高</a>
+                		</div>
+                		<div class="mui-collapse-content itemcontent">
+               				<a>价格从高到低</a>
+                		</div>
+                 	</div>
+               </li>
+ 
+   
+			</ul>
+			
+		 </div>
+		 
+		 <div class="mui-col-xs-6">
+		    <ul class="mui-table-view ">
+               	<li class="mui-table-view-cell mui-collapse menu-head-toggle"style="text-align: center;">
+               		
+               		<a class="mui-navigate-left menu-toggle" href="#">销量优先</a>
+               		<div  class="mui-col-xs-12 fix" >
+               			
+                 	</div>
+               </li>
+ 
+   
+			</ul>
+		 </div>
+	</div>
+		<!--这是隐藏的一块东西-->
+		{notempty name="itemlist"}
+		<ul class="mui-table-view">
+	    <li class="mui-table-view-cell mui-media ">
+			{volist name="itemlist" id="vo"}
+	        <a href="{:url('Products/detail',['id'=>$vo.id])}">
+	            <img class="proimgsize  mui-pull-left " src="{$vo->pic}" ;>
+	            <div class="mui-media-body">
+					<span style="font-weight: 700;font-size: 16px;">{$vo->name}</span>
+	                <br><br><br>
+	                <p class="mui-ellipsis"><b style="margin-left:-8px;font-size: 16px;color:orangered">{notempty name="$vo->attr"}￥{$vo.attr[0]->attr_price}{/notempty}{empty name="$vo->attr"}价格未定{/empty}</b><span class="mui-pull-right" style="font-size: 12px !important;">成交量{$vo->sale_all}&nbsp;&nbsp;点击量{$vo->click_month}</span></p>
+	            </div>
+	        </a>
+			{/volist}
+		</li>
+	   </ul>
+		{/notempty}
+		<h4 align="center">{notempty name="notice"}{$notice}{/notempty}</h4>
+  
+		
+		
+	
+	
+	
+        
+	
+	
+	</div>
+{/block}
+{block name="js"}
+      <script type="text/javascript">
+			mui.init();
+			$(function(){
+               var mask=null;
+				$('#se').click(function(){
+					var text=$("#search").val();
+					if(text || text!=''){
+						//alert(text);
+						$("form")[0].submit();
+
+					}
+				});
+		});
+
+		</script>
+{/block}

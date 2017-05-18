@@ -1,0 +1,160 @@
+{extend name="public/layout" /}
+{block name="css"}
+    <style>
+
+        .mui-segmented-control.mui-segmented-control-inverted ~ .mui-slider-progress-bar{
+            background: #FF8C5B;
+            height:2px;
+        }
+
+        .mui-segmented-control .mui-control-item {
+            line-height: 46px;
+        }
+        .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+            color:#FF8C5B ;
+        }
+        .mui-slider-indicator{
+            color:#545454;
+        }
+        .mui-slider .mui-segmented-control.mui-segmented-control-inverted ~ .mui-slider-group .mui-slider-item{
+            border-bottom: 0px solid #c8c7cc;
+            border-top: 6px solid #c7c8cc;
+            padding-top:25px ;
+        }
+        .mui-table-view-cell::after{
+            display: none;
+        }
+
+        .mui-table-view .mui-media-object {
+            line-height: 66px;
+            max-width: 66px;
+            height: 66px;
+
+        }
+        .mui-table-view-cell{
+
+            padding-right: 25px;
+
+        }
+
+        .mui-table-view::after{
+            width:10%;
+            margin-left:20px ;
+        }
+        .paysgoods{
+            display: block;
+            width:120px;
+            background:#FF5B5A ;
+
+            float:right;
+            color: white;
+        }
+        .delgoods{
+            display: block;
+            width:120px;
+            float:right;
+            font-size: 12px;
+            text-align:right;
+            padding-right: 10px;
+        }
+        .address-none{
+            border-bottom:6px  #c8c7cc solid;
+            height: 110px;
+            text-align:left;
+            padding:20px 15px;
+            text-align: center;
+            line-height: 90px;
+
+        }
+        .talk{
+            border-top:6px  #c8c7cc solid  ;
+            padding-top:10px;
+        }
+        .addopen{
+            float: right;padding-right:20px;line-height: 90px;text-align: center;
+        }
+    </style>
+{/block}
+{block name="content"}
+<div class="address-none">
+    <span class="iconfont icon-zuobiao " style="font-size: 24px;margin-right: 10px;"></span>尚未添加地址，点击添加地址
+    <div class="addopen">
+        >
+    </div>
+
+
+</div>
+<div class="mui-slider">
+    <div class="mui-slider-group">
+        <div id="items1" class="mui-slider-item mui-control-content mui-active">
+            <div class="list">
+                <ul class="mui-table-view">
+                    <div>
+                        <li class="mui-table-view-cell mui-media">
+                            <a href="javascript:;">
+                                <img class="mui-media-object mui-pull-left" src="img/pro.png">
+                                <div class="mui-media-body mediabodys">
+                                    <span  class="list-text">荷兰进口红酒 </span>
+				              <span class="list-price">&times;20
+            	              <p align="right"> &times;1</p>
+            	              </span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="mui-table-view-cell mui-media">
+
+                            <a href="javascript:;">
+                                <img class="mui-media-object mui-pull-left" src="img/pro.png">
+                                <div class="mui-media-body mediabodys">
+                                    <span  class="list-text">荷兰进口红酒 </span>
+				              <span class="list-price">&times;20
+            	              <p align="right"> &times;1</p>
+            	              </span>
+                                </div>
+                            </a>
+                        </li>
+
+
+                    </div><!--一个订单的结束-->
+
+                </ul>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+</div>
+<div class="talk">
+    <div class="mui-input-row">
+        <label>买家留言</label>
+        <input type="text"  placeholder="请在这里输进去您的特殊要求">
+    </div>
+
+
+
+
+</div>
+<div class="ajoin"style="background: white;">
+    <a href="" class="paysgoods">立即支付</a>
+    <a href="" class="delgoods">
+        合计:<span style="color:#FF5B5A;font-size:18px;">16</span></a>
+
+
+</div>
+{/block}
+{block name="js"}
+
+
+
+
+<script type="text/javascript">
+
+</script>
+
+
+{/js}

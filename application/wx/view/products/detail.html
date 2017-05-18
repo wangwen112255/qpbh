@@ -1,0 +1,158 @@
+{extend name="public/layout" /}
+{block name="css"}
+<style>
+	.mui-bar .mui-btn{
+		height:50px;
+		top: 0px;
+	}
+
+	.mui-bar-nav ~ .mui-content {
+		padding-bottom: 100px;
+	}
+	.mui-btn, button, input[type="button"], input[type="reset"], input[type="submit"]{
+		font-size: 12px;
+		line-height: 0.8;
+		word-spacing: 6px;
+	}
+	.desc::before {
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		height: 1px;
+		content: '';
+		-webkit-transform: scaleY(.5);
+		transform: scaleY(.5);
+		background-color: #c8c7cc;
+	}
+	.desc p {
+		text-indent: 0px;
+	}
+	.desc img {
+		margin-left: -40px;
+	}
+	.selected{
+     background-color:#dd524d;
+	}
+  p{
+	  text-indent: 0px;
+	  padding: 0px;
+
+  }
+</style>
+
+{/block}
+{block name="content"}
+
+
+		<header class="mui-bar mui-bar-nav white " style="height:20px !important;box-shadow: none;">
+		  	<b><span class="mui-icon mui-icon-arrowthinleft mui-pull-left"style="font-weight: 900;font-size: 30px; " onclick="history.go(-1);"></span></b>
+	        
+	    </header>
+    <div class="mui-content white">
+	<div class="mui-card cardclear">
+		
+			<div class="mui-slider white showimg">
+		  	  <div class="mui-slider-group ">
+		  	    <!--第一个内容区容器-->
+		  	    <div class="mui-slider-item">
+		  	     <img src="{$detail->pic}" style="height:300px" />
+		  	    </div>
+		  	    </div>
+		  	    <div class="mui-slider-indicator">
+		  	  	<div class="mui-indicator mui-active"></div>
+		  	 </div>
+		  </div>
+		<div class="mui-card-content imgtitle"><span style="margin:4px 0px;display: block;color: #000;">{$detail->name}</span>
+		<p align="left"><b style="font-size: 24px;color:#ff1407;font-weight: 300">￥{notempty name="$detail->attr"}{$detail->attr[0]->attr_price}{/notempty}{empty name="$detail->attr"}价格未定{/empty}</b>&nbsp;&nbsp;&nbsp;&nbsp;
+			<del>{notempty name="$detail->attr"}<?php $price=$detail->attr[0]->attr_price ?>{$price*100/95|ceil}{/notempty}</del></p>
+		<p align="left"><h6>月销量{$detail->sale_month}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点击量{$detail->click_all}</h6></p>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-collapse">
+					<a class="mui-navigate-right"  style="padding-left:0px" href="#"><b>请选择商品</b></a>
+					<div class="mui-collapse-content" style="padding-left: 0px">
+						<p class="color" style="padding-top: 8px">颜色
+							<button >红色</button>
+                        <button>红色</button>
+						</p>
+						<p class="shape" style="padding-top: 8px">品型
+							<button style="word-spacing: 4px" >100g</button>
+							<button style="word-spacing: 10px">200g</button>
+							<button style="word-spacing: 12px">300g</button>
+
+						</p>
+						<p  style="padding-top: 16px">
+
+						数量
+						<div class="mui-numbox" style="float:left;margin-left: 40px;margin-top: -20px;line-height: 1">
+							<!-- "-"按钮，点击可减小当前数值 -->
+							<button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+							<input class="mui-numbox-input" type="number" />
+							<!-- "+"按钮，点击可增大当前数值 -->
+							<button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+						</div>
+						</p>
+
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="navbar"></div>
+	   	<div class="mui-card-footer"><h4>商品详情</h4></div>
+	   	<div class="mui-card-footer"><span style="float:left;width: 120px;">商品名称</span>
+			<span style="float:right;overflow: hidden;white-space: nowrap;text-overflow: ellipsis">{$detail->name}</span>
+		</div>
+	   	<div class="desc" style="position: relative;text-align: left;padding-top: 10px;overflow: hidden;">
+
+
+
+
+			{$detail->desc}</div>
+
+       </div>
+      <nav class="mui-bar mui-bar-tab" style="display: block;height:50px">
+		    <div class="mui-row bootomrow">
+		    <div class="mui-col-xs-4"></div>
+		     <div class="mui-col-xs-4  hostbuy">
+		     
+		     	  <button type="button" id="collect"  class="hostcaret  mui-btn mui-btn-red">立即购买</button>
+		     	
+		     </div>
+		     <div class="mui-col-xs-4 hostbuy">
+		     
+		     	  <button type="button" id="buy"   class="hostcaret orange mui-btn mui-btn-purple">加入购物车</button>
+		     	
+		     	</div>
+		     </div>
+		 
+		 
+		</nav>
+	   
+	   
+	   
+	   
+	   </div>
+{/block}
+{block  name="js"}
+      <script type="text/javascript">
+			mui.init();
+			$(function(){
+				$('.color').find('button').first().addClass('selected');
+				$('.shape').find('button').first().addClass('selected');
+				$(".color button, .shape button").click(function(){
+                //$(this).attr({ 'background':"#a00"});
+				$(this).addClass("selected");
+                $(this).siblings().each(function(){
+					$(this).removeClass('selected');
+				});
+;					var c=$('.color .selected').html();
+                    var s=$(".shape .selected").html();
+					$(".mui-table-view a b").html("已选择"+c+s);
+				})
+
+				// alert(1);
+			 })
+
+
+		</script>
+{/block}

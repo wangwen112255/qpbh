@@ -1,0 +1,35 @@
+
+{extend name="public/layout" /}
+{block name="css"}
+{/block}
+
+{block name="content"}
+<form class="mui-input-group">
+    <div class="mui-input-row">
+        <label>收货人</label>
+        <input type="text"  placeholder="请输入收货人名字">
+    </div>
+    <div class="mui-input-row">
+        <label>联系电话</label>
+        <input type="text"  placeholder="请输入收货人联系电话">
+    </div>
+    <div style="float: left;width: 24%;margin-left: 15px;margin-top: 10px;">详细地址</div>
+    <div style="width:70%;float: left;">
+        <textarea  name="" rows="3" cols="" placeholder="请输入详细地址"></textarea>
+    </div>
+    <div class="nav" style="float: left;clear: both;"></div>
+    <div style="margin: 15px 15px 0px 0px;float: right;">
+        <button>保存</button>
+        <button>删除</button>
+    </div>
+
+</form>
+
+{/block}
+
+
+
+
+
+{block name="js"}
+{/block}

@@ -1,0 +1,317 @@
+{extend name="public/layout"}
+{block name="css"}
+<link href="__CSS__plugins/switchery/switchery.css" rel="stylesheet">
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=FbzOyQ4YujPrZsxiQKoB07aB"></script>
+<style>
+    .col-sm-4 {padding-left:0;}
+     #map_container{
+         height: 400px;
+     }
+</style>
+{/block}
+{block name="content"}
+    <form class="form-horizontal m-t" action="{:url('save')}" method="post" id="signupForm">
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    基本信息
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">名称：</label>
+                        <div class="col-sm-8">
+                            <input id="name" name="name" class="form-control" type="text" aria-required="true" aria-invalid="true" class="error">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">电话：</label>
+                        <div class="col-sm-8">
+                            <input id="tel" name="tel" class="form-control" type="text" aria-required="true" aria-invalid="false" class="valid">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">站点信息：</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" name="desc" id="desc"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">地址：</label>
+                        <div class="col-sm-8">
+                            <div class="col-sm-3" style="padding-left:0">
+                                <select id="province" onchange="_getChild(this);"  name="province_id" class="form-control">
+                                    <option value="0">请选择地区</option>
+                                    {volist name="addressList" id="v"}
+                                        <option value="{$v.id}">{$v.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="city" onchange="_getChild(this);"  name="city_id" class="form-control" style="display: none">
+                                    <option value="0">请选择城市</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <select id="county" name="county_id" class="form-control" style="display: none">
+                                    <option value="0">请选择区县</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">详细地址：</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="address" id="address" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">坐标：</label>
+                        <div class="col-sm-8">
+                            <div class="col-sm-6" style="padding-left: 0;">
+                                <input type="text" name="pointx" id="pointx" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" name="pointy" id="pointy" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">类型：</label>
+                        <div class="col-sm-8">
+                            <select name="type_id" id="type_id" class="form-control">
+                                {volist name="typeList" id="v"}
+                                <option value="{$v->id}">{$v->name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">是否签约：</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" value="1" class="form-control js-switch" id="is_vip" name="is_vip">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">状态：</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" value="1" class="form-control js-switch" id="status" name="status" checked>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    地图坐标
+                </div>
+                <div class="panel-body">
+                    <div id="preview">
+                        <div id="float_search_bar">
+                            <label>区域：</label>
+                            <input type="text" id="keyword" />
+                            <button type="button" id="search_button">查找</button>
+                            <span>点击地图或标注获取坐标</span>
+                        </div>
+                        <div id="map_container"></div>
+                    </div>
+                    <div id="result" style="margin-top: 4px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-3">
+                <button class="btn btn-primary col-sm-3" type="submit">提交</button>
+            </div>
+        </div>
+    </form>
+{/block}
+{block name="js"}
+<script src="__JS__plugins/validate/jquery.validate.min.js"></script>
+<script src="__JS__plugins/validate/messages_zh.min.js"></script>
+<script src="__JS__plugins/switchery/switchery.js"></script>
+<script>
+    // checkbox
+    var elem = document.querySelectorAll('.js-switch');
+    for (var i=0;i<elem.length;i++){
+        new Switchery(elem[i],{ color: '#64bd63', secondaryColor: '#f00', jackColor: '#fff'});
+    }
+
+    //
+    $().ready(function () {
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        $().ready(function () {
+            var icon = "<i class='fa fa-times-circle'></i> ";
+            var rules = {
+                title: "required",
+                name: "required"
+            };
+            var message = {
+                title: icon + "请输入中文名",
+                name: icon + "请输入参数名",
+            };
+            _validateForm('signupForm',rules, message);
+        });
+
+    });
+
+    function _getChild(ele){
+        var type = $(ele).attr('id');
+        var id = $(ele).val();
+        if(id==0){
+            return;
+        }
+        if(type == 'province'){
+            $('#city').hide();
+            $('#county').hide();
+            $('#city').html('');
+            $('#county').html('');
+        } else if (type == 'city'){
+            $('#county').hide();
+            $('#county').html('');
+        }
+        _ajax({
+            url: '{:url("Address/childlist")}',
+            data: {id: id},
+            success: function(data){
+                console.log(data.data);
+                if(data.code == 200){
+                    var d = data.data;
+                    if(!d){
+                        return;
+                    }
+                    if(d.length>0){
+                        if(type == 'province'){
+                            setItem(data.data, 'city');
+                        } else if (type == 'city'){
+                            $('#county').html('');
+                            setItem(data.data, 'county');
+                        }
+                    }
+                } else {
+                    layer.alert(data.msg,{icon:5});
+                }
+            }
+
+        })
+    }
+
+    function setItem(data,id){
+        var html = '<option value="0">选择地区</option>';
+        $.each(data, function(i,item){
+            html += '<option value="'+item.id+'">'+item.name+'</option>';
+        })
+        $('#'+id).html(html);
+        $('#'+id).show();
+    }
+
+
+    var center = '融元广场';
+    var city = '郑州';
+
+    document.getElementById("keyword").value = center;
+
+    var marker_trick = false;
+    var map = new BMap.Map("map_container");
+    map.enableScrollWheelZoom();
+
+    var pointx = 113.689093;
+    var pointy = 34.806134;
+    pointx = parseFloat( pointx );
+    pointy = parseFloat( pointy );
+
+    var point = new BMap.Point(pointx, pointy);
+    var marker = new BMap.Marker( point, {
+        enableMassClear: false,
+        raiseOnDrag: true
+    });
+
+    map.centerAndZoom(point, 15);
+    marker.enableDragging();
+    map.addOverlay(marker);
+
+    map.addEventListener("click", function(e){
+        if(!(e.overlay)){
+            map.clearOverlays();
+            marker.show();
+            marker.setPosition(e.point);
+            setResult(e.point.lng, e.point.lat);
+        }
+    });
+    marker.addEventListener("dragend", function(e){
+        setResult(e.point.lng, e.point.lat);
+    });
+
+    var local = new BMap.LocalSearch(map, {
+        renderOptions:{map: map},
+        pageCapacity: 1
+    });
+    local.setSearchCompleteCallback(function(results){
+        if(local.getStatus() !== BMAP_STATUS_SUCCESS){
+            alert("无结果");
+        } else {
+            marker.hide();
+        }
+    });
+    local.setMarkersSetCallback(function(pois){
+        for(var i=pois.length; i--; ){
+            var marker = pois[i].marker;
+            marker.addEventListener("click", function(e){
+                marker_trick = true;
+                var pos = this.getPosition();
+                setResult(pos.lng, pos.lat);
+            });
+            marker.enableDragging();//可拽
+            map.enableInertialDragging();
+            marker.addEventListener("dragend", function(e){
+                setResult(e.point.lng, e.point.lat);
+            });
+        }
+    });
+
+    window.onload = function(){
+        //local.search(center);
+        document.getElementById("search_button").onclick = function(){
+            local.search(document.getElementById("keyword").value);
+        };
+        document.getElementById("keyword").onkeyup = function(e){
+            var me = this;
+            e = e || window.event;
+            var keycode = e.keyCode;
+            if(keycode === 13){
+                local.search(document.getElementById("keyword").value);
+            }
+        };
+    };
+
+    /*
+     * setResult : 定义得到标注经纬度后的操作
+     * 请修改此函数以满足您的需求
+     * lng: 标注的经度
+     * lat: 标注的纬度
+     */
+    function setResult(lng, lat){
+        document.getElementById("pointx").value =lng;
+        document.getElementById("pointy").value =lat;
+    }
+
+    /*根据坐标定位*/
+    function dingwei(){
+        var x = document.getElementById('pointx').value;
+        var y = document.getElementById('pointy').value;
+
+        if(x != "" && y != ""){
+            map.clearOverlays();
+            var new_point = new BMap.Point(x,y);
+            var marker = new BMap.Marker(new_point);
+            map.clearOverlays();
+            map.addOverlay(marker);
+            map.panTo(new_point);
+            var label = new BMap.Label("新坐标",{offset:new BMap.Size(20,-10)});
+            marker.setLabel(label);
+        }
+    }
+</script>
+{/block}

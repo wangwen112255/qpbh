@@ -1,0 +1,53 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close"><i class="fa fa-times-circle"></i></div>
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <span><img alt="image" class="img-circle" src="/static/img/profile_small.jpg" /></span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear">
+                               <span class="block m-t-xs"><strong class="font-bold">Beaut-zihan</strong></span>
+                                <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>
+                                </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a class="J_menuItem" href="form_avatar.html">修改头像</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="logo-element">H+
+                </div>
+            </li>
+            <li>
+                <a class="J_menuItem" href="{:url('index.index')}">
+                    <i class="fa fa-home"></i>
+                    <span class="nav-label">主页</span>
+                </a>
+            <li>
+            {volist name="$list" id="v"}
+            <li>
+                {empty name="$v.child"}
+                <a class="J_menuItem" href="{:url($v.name)}">
+                    <i class="{$v.icon}"></i>
+                    <span class="nav-label">{$v.title}</span>
+                </a>
+                {else/}
+                <a href="#">
+                    <i class="{$v.icon}"></i>
+                    <span class="nav-label">{$v.title}</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    {volist name="$v.child" id="c"}
+                    <li>
+                        <a class="J_menuItem" href="{:url($c['name'])}"><i class="{$c.icon}"></i>{$c.title}</a>
+                    </li>
+                    {/volist}
+                </ul>
+                {/empty}
+            </li>
+            {/volist}
+        </ul>
+    </div>
+</nav>

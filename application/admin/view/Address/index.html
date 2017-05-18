@@ -1,0 +1,82 @@
+{extend name="public/layout"}
+{block name="css"}
+<link href="__CSS__plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+{/block}
+{block name="content"}
+<div class="col-sm-12">
+    <div class="fixed-table-toolbar">
+        <div class="bars pull-left">
+            <div class="btn-group hidden-xs">
+                <button onclick="_layOpenUrl('{:url('create')}','添加地区')" type="button" class="btn btn-outline btn-default" >
+                    <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-outline btn-default">
+                    <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="columns columns-right btn-group pull-right">
+            <button class="btn btn-default btn-outline" type="button" title="搜索"><i class="glyphicon glyphicon-search"></i></button>
+            <button onclick="javascript:window.location.reload();" class="btn btn-default btn-outline" type="button" name="refresh" title="刷新"><i class="glyphicon glyphicon-repeat"></i></button>
+        </div>
+        <div class="pull-right search">
+            <input class="form-control input-outline" type="text" placeholder="请输入关键字">
+        </div>
+    </div>
+    <table data-toggle="table" data-click-to-select="true" data-mobile-responsive="true">
+        <thead>
+        <tr>
+            <th data-field="id" data-checkbox="true"></th>
+            <th data-field="name">名称</th>
+            <th data-field="type">级别</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="list" id="v"}
+        <tr id="item{$v.id}">
+            <td><input type="checkbox" name="id" value="{$v.id}" /></td>
+            <td>{$v.name}</td>
+            <td>{$v.type}</td>
+            <td>
+                <button onclick="_layOpenUrl('{:url('childList',['id'=>$v.id])}', '地区列表');" class="btn btn-info " type="button">展开</button>
+                <button onclick="_layOpenUrl('{:url('edit',['id'=>$v.id])}', '修改地区');" class="btn btn-info " type="button"><i class="fa fa-paste"></i> 编辑</button>
+                <button onclick="_del({$v->id});" class="btn btn-danger" type="button"><i class="fa fa-trash"></i> 删除</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    {$list->render()}
+</div>
+{/block}}
+{block name="js"}
+<!-- Bootstrap table -->
+<script src="__JS__plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="__JS__plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="__JS__plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script>
+
+    function _del(id){
+        layer.confirm('确定删除？',{btn: ['删除','取消']},function(index){
+            _ajax({
+                url: "{:url('delete')}",
+                data: {id: id},
+                success: function(data){
+                    if(data.code == 200){
+                        $('#item'+id).hide();
+                        layer.msg(data.msg,{icon: 1,time: 700});
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                },
+                param: id
+            });
+            layer.close(index);
+        },function(index){
+            layer.close(index);
+        })
+    }
+
+</script>
+{/block}

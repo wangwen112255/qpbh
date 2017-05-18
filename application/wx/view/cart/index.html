@@ -1,0 +1,147 @@
+{block name}{extend name="public/layout" /}
+{block name="css"}
+<link rel="stylesheet" href="__CSS__square/_all.css">
+<style>
+       .icheckbox_square-red, .iradio_square-red{
+           float:left;
+           margin-right:5px ;
+           margin-top:20px;
+       }
+       .iradio_square-red:last-of-type{
+           float:left;
+           margin-right:5px ;
+           margin-top:10px;
+       }
+        .mui-segmented-control.mui-segmented-control-inverted ~ .mui-slider-progress-bar{
+            background: #FF8C5B;
+            height:2px;
+            height: 18px;
+            width: 18px;
+        }
+
+        .mui-segmented-control .mui-control-item {
+            line-height: 46px;
+        }
+        .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+            color:#FF8C5B ;
+        }
+        .mui-slider-indicator{
+            color:#545454;
+        }
+        .mui-slider .mui-segmented-control.mui-segmented-control-inverted ~ .mui-slider-group .mui-slider-item{
+            border-bottom: 0px solid #c8c7cc;
+            border-top: 6px solid #c7c8cc;
+            padding-top:25px ;
+        }
+        .mui-table-view-cell::after{
+            display: none;
+        }
+
+        .mui-table-view .mui-media-object {
+            line-height: 66px;
+            max-width: 66px;
+            height: 66px;
+
+        }
+        .mui-table-view-cell{
+
+            padding-right: 25px;
+
+        }
+
+        .mui-table-view::after{
+            width:10%;
+            margin-left:20px ;
+        }
+
+
+    </style>
+{/block}
+{block name="content"}
+
+<div class="mui-slider">
+    <div class="mui-slider-group">
+        <div id="items1" class="mui-slider-item mui-control-content mui-active">
+            <div class="list">
+                <ul class="mui-table-view">
+                    <div>
+                        <li class="mui-table-view-cell mui-media">
+                            <a href="javascript:;">
+                                <input name="item[]" type="checkbox" class="mui-pull-left paycheck" style="margin-right: 10px;margin-top: 26px;" >
+                                <img class="mui-media-object mui-pull-left" src="img/pro.png">
+                                <div class="mui-media-body mediabodys">
+                                    <span  class="list-text">荷兰进口红酒 </span>
+				              <span class="list-price">&times;20
+            	              <p align="right"> &times;1</p>
+            	              </span>
+                                </div>
+                            </a>
+
+                        </li>
+                        <li class="mui-table-view-cell mui-media">
+
+                            <a href="javascript:;">
+                                <input name="item[]"   type="checkbox" class="mui-pull-left paycheck"  >
+                                <img class="mui-media-object mui-pull-left" src="img/pro.png">
+                                <div class="mui-media-body mediabodys">
+                                    <span  class="list-text">荷兰进口红酒 </span>
+				              <span class="list-price">&times;20
+            	              <p align="right"> &times;1</p>
+            	              </span>
+                                </div>
+                            </a>
+                        </li>
+
+
+                    </div><!--一个订单的结束-->
+
+                </ul>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+</div>
+
+
+<div class="ajoin"style="background: white;">
+    <span style="float:left;display: block;margin-left: 20px;">
+    <input name="checkboxs"   type="checkbox" class="paycheckall" style="margin-left: 25px !important;" />
+    <span style="color: black;">全选</span>
+    </span>
+    <a href="" class="paysgoods">立即结算</a>
+    <a href="" class="delgoods">删除商品</a>
+
+
+
+</div>
+{/block}
+{block name="js"}
+<script src="__JS__icheck.min.js"></script>
+<script>
+    $(function() {
+     $(":checkbox").iCheck({
+         cursor : true,
+         checkboxClass :'iradio_square-red',
+         radioClass : 'iradio_square-red',
+         increaseArea : '20%'
+     });
+        $(":checkbox:last").on('ifChanged',function(e){
+            var status=this.checked;
+            if(status){
+
+                $(":checkbox").iCheck('check');
+            }
+            else{
+                $(":checkbox").iCheck('uncheck');
+
+            }
+        });
+    });
+</script>
+{/block}

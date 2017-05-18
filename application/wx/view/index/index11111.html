@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="__CSS__mui.min.css" rel="stylesheet" />
+		<link href="__CSS__base-index.css" rel="stylesheet" />
+		<link href="__PUBLIC__fonts/iconfont.css" rel="stylesheet" />
+	</head>
+	<body>
+
+{volist name="data" id="item"}
+{volist name="item" id="vo"}
+
+{$vo->name}
+{/volist}
+{/volist}
+
+
+
+
+
+
+		 <script src="__JS__jquery.min.js"></script>
+		<script src="__JS__mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			$(function(){
+			$(".host").bind("click",function(){
+			  $(this).css("background-color","orange").siblings("div").css("background-color","white");			
+			});
+				
+				
+			})
+		</script>
+	</body>
+
+</html>

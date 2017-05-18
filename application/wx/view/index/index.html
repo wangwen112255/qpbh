@@ -1,0 +1,230 @@
+{extend name="public/layout" /}
+{block name="css"}
+<style>
+    /*.mui-bar .mui-input-row .mui-input-clear ~ .mui-icon-clear{top: 5px;}*/
+    .mui-bar-nav~.mui-content{padding-bottom: 40px;}
+    .mui-search input[type=search]{
+        padding-left: 15px;
+    }
+
+    .mui-icon-clear:before, .mui-icon-close-filled:before{content: '';}
+
+    .mui-icon-search {
+        display: none
+    }
+
+    .mui-search.mui-active::before {
+        padding-top: 2px;
+        display: none;
+    }
+
+    #se {
+        position: absolute;
+        top: 2px;
+        z-index: 1006;
+        right: 0;
+        color: #FFF;
+    }
+
+    .mui-bar-tab .mui-tab-item.mui-active {
+        color: #FF4C4C;
+    }
+    .mui-card{
+        margin-bottom: 0;
+    }
+    .mui-card-content{padding: 5px;}
+    .leftpadding{padding-bottom: 10px;}
+
+    .foot-nav {
+        width: 100%;
+        position: fixed;
+        background: white;
+        border-top: 1px solid #c7c8cc;
+        padding-top: 4px;
+        height: 45px;
+        bottom: 0px;
+        font-size: 20px;
+    }
+
+    .foot-item {
+        width: 25%;
+        float: left;
+        text-align: center;
+    }
+    .mui-bar input[type="search"] {
+        height: 36px;
+    }
+
+    .foot-item:active {
+        color: #FF4C4C;
+    }
+</style>
+{/block}
+{block name="content"}
+<header class="mui-bar mui-bar-nav headback ">
+    <form action="{:url('Products/search')}" onsubmit="_search();return false;">
+        <div class="mui-input-row mui-search ">
+            <input type="search" name="search" id="search" class="mui-input-clear"
+                   style="background:#B52600;color:#F0E0DC;border-radius: 6px;margin-top: 10px;" placeholder="">
+            <span style="display:inline;" id="se" class="mui-icon mui-icon-search"></span>
+        </div>
+    </form>
+</header>
+<div class="mui-content">
+    <div class="mui-slider white">
+        <div class="mui-slider-group mui-slider-loop" style="height:120px;">
+            <!--第一个内容区容器-->
+            <div class="mui-slider-item">
+                <img src="__PUBLIC__img/lunbo.png"/>
+            </div>
+            <div class="mui-slider-item">
+                <img src="__PUBLIC__img/lunbo.png"/>
+            </div>
+            <div class="mui-slider-item">
+                <img src="__PUBLIC__img/lunbo.png"/>
+            </div>
+
+
+        </div>
+
+        <div class="mui-slider-indicator">
+            <div class="mui-indicator mui-active"></div>
+            <div class="mui-indicator"></div>
+            <div class="mui-indicator"></div>
+        </div>
+    </div>
+
+    <div class="mui-row white" style="height:100px;padding-top: 10px;padding-bottom:25px;">
+
+        <div class="mui-col-xs-3 " style="text-align: center">
+            <div class="imgbg1">
+                <a href="{:url('Products/lists',['id'=>$item[0]->id])}"><span
+                        class="iconfont icon-iconlingshi headicon"></span></a></div>
+            <span class="headtext">{$item[0]->cate_name}</span>
+        </div>
+        <div class="mui-col-xs-3  " style="text-align: center">
+            <div class="imgbg2">
+                <a href="{:url('Products/lists',['id'=>$item[1]->id])}">
+                    <span class="iconfont icon-lingshi headicon"></span></a></div>
+            <span class="headtext">{$item[1]->cate_name}</span>
+        </div>
+        <div class="mui-col-xs-3 " style="text-align: center">
+            <div class="imgbg3">
+                <a href="{:url('Products/lists',['id'=>$item[2]->id])}">
+                    <span class="iconfont icon-yinliao1 headicon"></span>
+                </a></div>
+            <span class="headtext">{$item[2]->cate_name}</span>
+
+        </div>
+        <div class="mui-col-xs-3 " style="text-align: center">
+            <!--圆形图片-->
+            <div class="imgbg4">
+                <a href="{:url('Products/lists',['id'=>$item[3]->id])}">
+                    <span class="iconfont icon-qita headicon"></span></a></div>
+            <span class="headtext">{$item[3]->cate_name}</span>
+
+        </div>
+
+        <!--	  热门商品	-->
+    </div>
+    <!--	 商品栏目，可以进行遍历-->
+    <div style="margin-bottom:8px ;">
+        <div class="white">
+            <a class="ahot"><span class="iconfont icon-remen headiconitem"></span>热门商品</a>
+            <a href="{:url('Products/more',['info'=>'hot'])}" class="amore">更多></a>
+        </div>
+        <div class="mui-row white leftpadding">
+
+            {volist name="hotlist" id="vo"}
+            <div class="mui-col-xs-4">
+                <div class="mui-card card">
+                    <div class="mui-card-content">
+                        <a href="{:url('Products/detail',['id'=>$vo.id])}">
+                            <img src="{$vo.pic}" class="imgsize"/>
+                            <div><a href="" class="aproshow">{$vo->name}</a></div>
+                            <br>
+                            <a href="" class="aprice">{notempty
+                                name="$vo->attr"}{$vo->attr[0]->attr_price|default=''}{/notempty}￥</a>
+
+                            <a href="" class="acart"><span class="iconfont icon-gouwuche"></span></a>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+    <div style="margin-bottom:20px ;">
+        <div class="white">
+            <a class="ahot"><span class="iconfont icon-tuijian1 headiconitem "></span>新品推荐</a>
+            <a href="{:url('Products/more',['info'=>'promote'])}" class="amore">更多></a>
+        </div>
+        <div class="mui-row white leftpadding">
+
+            {volist name="promotelist" id="vo"}
+            <div class="mui-col-xs-4">
+                <div class="mui-card card">
+                    <div class="mui-card-content">
+                        <a href="{:url('Products/detail',['id'=>$vo.id])}">
+                            <img src="{$vo.pic}" class="imgsize"/>
+                            <div><a href="" class="aproshow">{$vo->name}</a></div>
+                            <br>
+                            <a href="" class="aprice">￥{notempty
+                                name="$vo->attr"}{$vo->attr[0]->attr_price|default='buweikong'}{/notempty}</a>
+                            <a href="" class="acart"><span class="iconfont icon-gouwuche"></span></a>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+    <!--遍历结束-->
+    <!--	 商品栏目，可以进行遍历-->
+    <div class="foot-nav">
+        <div class="foot-item" onclick="opens('{:url('Index/index')}')">
+            <span style="height: 20px;font-size:24px;display: block" href="" class="mui-icon mui-icon-home"></span>
+            <span style="height: 12px;font-size: 12px; display: block" href="" class="mui-tab-label">首页</span>
+        </div>
+        <div class="foot-item" onclick="opens('{:url('Cart/index')}')">
+            <span style="height: 20px;font-size:24px;display: block" href="" class="iconfont icon-tubiao4 "></span>
+            <span style="height: 12px;font-size: 12px; display: block" href="" class="mui-tab-label">购物车</span>
+        </div>
+        <div class="foot-item" onclick="opens('{:url('Personal/index')}')">
+            <span style="height: 20px;font-size:24px;display: block" href="" class="iconfont icon-gerenshezhi"></span>
+            <span style="height: 12px;font-size: 12px; display: block" href="" class="mui-tab-label">我的千品</span>
+        </div>
+        <div class="foot-item" onclick="opens('{:url('Share/index')}')">
+            <span style="height: 20px;font-size:24px;display: block" href="" class="iconfont icon-laba"></span>
+            <span style="height: 12px;font-size: 12px; display: block" href="" class="mui-tab-label">推荐中心</span>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    mui.init();
+    function opens(url) {
+        window.location.href = url;
+    }
+
+    var gallery = mui('.mui-slider');
+    gallery.slider({
+        interval: 5000//自动轮播周期，若为0则不自动播放，默认为0；
+    });
+    $(function () {
+        $(".host").bind("click", function () {
+            $(this).css("background-color", "orange").siblings("div").css("background-color", "white");
+        });
+    })
+
+
+    $('#se').click(function () {
+        var text = $("#search").val();
+        if (text || text != '') {
+            $("form")[0].submit();
+
+        }
+    });
+</script>
+{/block}

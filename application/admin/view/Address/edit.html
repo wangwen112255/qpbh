@@ -1,0 +1,48 @@
+{extend name="public/layout"}
+{block name="css"}
+<link href="__CSS__plugins/switchery/switchery.css" rel="stylesheet">
+{/block}
+{block name="content"}
+
+    <form class="form-horizontal m-t" action="{:url('update',['id'=>$data.id])}" method="post" id="signupForm">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">名称：</label>
+            <div class="col-sm-8">
+                <input id="name" name="name" value="{$data.name}" class="form-control" type="text" aria-required="true" aria-invalid="true" class="error">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">级别：</label>
+            <div class="col-sm-4">
+                <select name="type" id="type" class="form-control">
+                    <option value="2" {eq name="$data->getData('type')" value="2"}selected{/eq}>城市</option>
+                    <option value="1" {eq name="$data->getData('type')" value="1"}selected{/eq}>省</option>
+                    <option value="3" {eq name="$data->getData('type')" value="3"}selected{/eq}>区县</option>
+                    <option value="0" {eq name="$data->getData('type')" value="0"}selected{/eq}>国家</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-3">
+                <button class="btn btn-primary" type="submit">提交</button>
+            </div>
+        </div>
+    </form>
+{/block}
+{block name="js"}
+<script src="__JS__plugins/validate/jquery.validate.min.js"></script>
+<script src="__JS__plugins/validate/messages_zh.min.js"></script>
+<script>
+    $().ready(function () {
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        var rules = {
+            title: "required"
+        };
+        var message =  {
+            name: icon + "请输入地区名称",
+        };
+        _validateForm('', rules, message);
+
+    });
+</script>
+{/block}

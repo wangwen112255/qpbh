@@ -1,0 +1,94 @@
+{extend name="public/layout"}
+{block name="css"}
+<style>
+    .btn-circle{padding: 1px;width: 20px;height: 20px}
+    .tool{
+        position: absolute;
+        top: 6px;
+    }
+    .tool-delete{right: 5px;}
+    .tool-edit{right: 30px;}
+    .tool-add{right: 55px;}
+    .dd-handle-l{
+        display: block;
+        margin: 5px 0;
+        padding: 5px 10px;
+        color: #333;
+        text-decoration: none;
+        border: 1px solid #e7eaec;
+        background: #f5f5f5;
+        border-radius: 3px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="col-sm-12">
+    <div class="ibox">
+        <div class="ibox-title">
+            <button type="button" onclick="_layOpenUrl('{:url('create')}');" type="button" class="btn btn-primary">添加</button>
+        </div>
+        <div class="ibox-content">
+            {notempty name="list"}
+            <div class="dd" id="nestable">
+                <ol class="dd-list">
+                    {volist name="list" id="v"}
+                    <li class="dd-item" data-id="{$v->id}" id="item{$v->id}">
+                        <div class="dd-handle-l">
+                            <span class="label label-info"><i class="fa fa-users"></i></span> {$v->cate_name}
+                        </div>
+                        <span onclick="_layOpenUrl('{:url('create',['cate_id'=>$v['id']])}');" class="btn btn-primary btn-circle tool tool-add"><i class="fa fa-plus"></i></span>
+                        <span onclick="_layOpenUrl('{:url('edit',['id'=>$v['id']])}');" class="btn btn-primary btn-circle tool tool-edit"><i class="fa fa-pencil"></i></span>
+                        <span onclick="_del({$v->id});" class="btn btn-primary btn-circle tool tool-delete"><i class="fa fa-trash-o"></i></span>
+                        {notempty name="v->child"}
+                        <ol class="dd-list">
+                            {volist name="v->child" id="c"}
+                            <li class="dd-item" data-id="{$c->id}" id="item{$c->id}">
+                                <div class="dd-handle-l">
+                                    <span class="label label-info"><i class="fa fa-cog"></i></span> {$c->cate_name}
+                                </div>
+                                <span onclick="_layOpenUrl('{:url('edit',['id'=>$c['id']])}');" class="btn btn-primary btn-circle tool tool-edit"><i class="fa fa-pencil"></i></span>
+                                <span onclick="_del({$c->id});" class="btn btn-primary btn-circle tool tool-delete"><i class="fa fa-trash-o"></i></span>
+                            </li>
+                            {/volist}
+                        </ol>
+                        {/notempty}
+                    </li>
+                    {/volist}
+                </ol>
+            </div>
+            {else/}
+                <h3 style="text-align: center">还没有分类 <button type="button" onclick="_layOpenUrl('{:url('create')}');" class="btn btn-primary">添加</button></h3>
+            {/notempty}
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script src="__PUBLIC__/js/plugins/nestable/jquery.nestable.js"></script>
+<script>
+    $('.dd').nestable({ /* config options */ });
+    function _del(id){
+        layer.confirm('确定删除？',{btn: ['删除','取消']},function(index){
+            _ajax({
+                url: "{:url('delete')}",
+                data: {id: id},
+                success: function(data){
+                    if(data.code == 200){
+                        $('#item'+id).hide();
+                        layer.msg(data.msg,{icon: 1,time: 700});
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                },
+                param: id
+            });
+            layer.close(index);
+        },function(index){
+            layer.close(index);
+        })
+    }
+
+</script>
+{/block}
